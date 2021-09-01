@@ -1,0 +1,220 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_CARROS 10
+
+typedef struct{
+    char marca[40];
+    char modelo[40];
+    char placa[10];
+    int ano;
+} Carro;
+Carro carros[MAX_CARROS];
+int carros_total = 0;
+void menu();
+void cadastrar();
+void listar();
+void listar_por_ano();
+void listar_modelo();
+void listar_ano_espec();
+void adicionar_carro(char *marca[40], char *modelo[40], char *placa[10], int ano);
+
+int main()
+{
+    menu();
+    return 0;
+}
+
+void menu(){
+    int op;
+    do{
+        system("cls");
+        printf("\n\n --------------------  Garage Car - Sistema de Cadastro  --------------------\n\n");
+        printf("\n1 - Cadastra Veiculo (%d)\n2 - Listar Veiculos Cadastrados\n3 - Listar a partir do ano de fabricacao\n4 - Pesquisar por ano especifico de fabricacao\n5 - Listar veiculos por modelo\n0 - Sair\n", carros_total);
+        scanf("%d", &op);
+        getchar();
+        switch(op){
+            case 0:
+                return 0;
+                break;
+            case 1:
+                if(carros_total < MAX_CARROS)
+                {
+                    cadastrar();
+                }
+                break;
+            case 2:
+                listar();
+                break;
+            case 3:
+                listar_por_ano();
+                break;
+            case 4:
+                listar_ano_espec();
+                break;
+            case 5:
+                listar_modelo();
+                break;
+
+        }
+
+        getchar();
+    }
+    while(op!=0);
+
+}
+
+void cadastrar(){
+	char marca[40];
+	char placa[10];
+	char modelo[40];
+	int ano;
+	int op;
+	do{
+        system("cls");
+		printf("\nMarca do veiculo: ");
+		fgets(marca, sizeof(marca), stdin);
+		printf("\nModelo do veiculo: ");
+		fgets(modelo, sizeof(modelo), stdin);
+		printf("\nPlaca do veiculo: ");
+		fgets(placa, sizeof(placa), stdin);
+		printf("\nAno de fabricacao do veiculo: ");
+		scanf("%d", &ano);
+		//validar dados coletados
+		adicionar_carro(&marca, &modelo, &placa, ano);
+		//ordenar lista por ano
+
+		printf("\n1 - Continuar cadastrando\n0 - Sair\n");
+		scanf("%d", &op);
+		getchar();
+	}
+	while(op!=0);
+}
+
+void adicionar_carro(char *marca[40], char *modelo[40], char *placa[10], int ano){
+
+    // definir o indice que gostaria de inserir (carro_index)
+
+    int insert_index = carros_total;
+    int previous_index = insert_index - 1;
+
+    // enquanto o carro da posicao anterior ao insert_index tiver ano maior: fazer
+
+    while (previous_index > -1 && carros[previous_index].ano > ano){
+
+        carros[insert_index].ano = carros[previous_index].ano;
+        strcpy(carros[insert_index].marca, carros[previous_index].marca);
+        strcpy(carros[insert_index].modelo, carros[previous_index].modelo);
+        strcpy(carros[insert_index].placa, carros[previous_index].placa);
+        insert_index = previous_index;
+        previous_index = previous_index - 1;
+    }
+
+    carros[insert_index].ano = ano;
+    strcpy(carros[insert_index].marca, marca);
+    strcpy(carros[insert_index].modelo, modelo);
+    strcpy(carros[insert_index].placa, placa);
+    carros_total++;
+
+
+}
+
+void listar(){
+    system("cls");
+    for(int index = 0; index < carros_total; index++)
+    {
+        printf("\nMarca do veiculo: %s", carros[index].marca);
+        printf("Modelo do veiculo: %s", carros[index].modelo);
+        printf("Placa do veiculo: %s", carros[index].placa);
+        printf("Ano de fabricacao do veiculo: %d\n\n", carros[index].ano);
+    }
+}
+
+void listar_por_ano(){
+    int ano;
+
+    system("cls");
+    // obter ano pelo teclado
+    printf("\nAno desejado: ");
+    scanf("%d", &ano);
+
+    // filtrar carros por ano
+
+    for (int index = 0; index < carros_total; index++)
+    {
+        if (ano <= carros[index].ano)
+        {
+            printf("\nMarca do veiculo: %s", carros[index].marca);
+            printf("Modelo do veiculo: %s", carros[index].modelo);
+            printf("Placa do veiculo: %s", carros[index].placa);
+            printf("Ano de fabricacao do veiculo: %d\n\n", carros[index].ano);
+
+        }
+
+    }
+
+    getchar();
+
+}
+
+void listar_modelo(){
+    char modelo[40];
+    int m = 0;
+
+    system("cls");
+    // obter model pelo teclado
+    printf("\nModelo desejado: ");
+    fgets(modelo, sizeof(modelo), stdin);
+
+    // filtrar carros por modelo
+
+    for (int index = 0; index < carros_total; index++)
+        {
+            if (strcmp(carros[index].modelo, modelo) == 0)
+            {
+                printf("\nMarca do veiculo: %s", carros[index].marca);
+                printf("Modelo do veiculo: %s", carros[index].modelo);
+                printf("Placa do veiculo: %s", carros[index].placa);
+                printf("Ano de fabricacao do veiculo: %d\n\n", carros[index].ano);
+                m++;
+            }
+            if (m == 0){
+                printf("\nModelo nao encontrado\n\n\n");
+            }
+            system ("pause");
+                break;
+        }
+        getchar();
+
+}
+
+void listar_ano_espec(){
+    int ano;
+    int k = 0;
+
+    system("cls");
+    printf("\nAno especifico desejado: ");
+    scanf("%d", &ano);
+
+
+    for (int index = 0; index < carros_total; index++)
+    {
+        if (ano == carros[index].ano)
+        {
+            printf("\nMarca do veiculo: %s", carros[index].marca);
+            printf("Modelo do veiculo: %s", carros[index].modelo);
+            printf("Placa do veiculo: %s", carros[index].placa);
+            printf("Ano de fabricacao do veiculo: %d\n\n", carros[index].ano);
+            k++;
+        }
+        if (k == 0){
+            printf("\nVeiculo nao encontrado\n\n\n");
+        }
+        system ("pause");
+            break;
+    }
+
+    getchar();
+
+
+}
